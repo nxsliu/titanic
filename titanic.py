@@ -1,88 +1,49 @@
-# Load libraries
-import pandas
-from pandas.plotting import scatter_matrix
-import matplotlib.pyplot as plt 
-from sklearn import model_selection
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
+# Data analysis and wrangling
+import pandas as pd
+import numpy as np
+import random as rnd
+
+# visualisation
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# machine learning
 from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC, LinearSVC
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC
+from sklearn.linear_model import Perceptron
+from sklearn.linear_model import SGDClassifier
+from sklearn.tree import DecisionTreeClassifier
 
-# Load dataset
-path = "train.csv"
-names = ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'Sibsp', 'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked']
-dataset = pandas.read_csv(path, names=names)
+# acquire data
+train_df = pd.read_csv('data/train.csv')
+test_df = pd.read_csv('data/test.csv')
+combine = [train_df, test_df]
 
-# shape
-#print(dataset.shape)
+#print(train_df.columns.values)
 
-#head
-#print(dataset.head(20))
+# preview the data
+# print(train_df.head().to_string())
 
-# descriptions
-#print(dataset.describe())
+#print(train_df.tail())
 
-# box and whisker plots
-#dataset.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)
-#plt.show()
+# print('_'*40)
+# train_df.info()
+# print('_'*40)
+# test_df.info()
 
-# histograms
-dataset.hist()
-plt.show()
 
-# # scatter plot matrix
-# scatter_matrix(dataset)
-# plt.show()
+# print("-- Describe--")
+# print(train_df.describe(include=['O']).to_string())
 
-# # Split-out validation dataset
-# array = dataset.values
-# X = array[:,0:4]
-# Y = array[:,4]
-# validation_size = 0.20
-# seed = 7
-# X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, test_size=validation_size, random_state=seed)
-
-# # Test options and evaluation metric
-# seed = 7
-# scoring = 'accuracy'
-
-# # Spot Check Algorithms
-# models = []
-# models.append(('LR', LogisticRegression()))
-# models.append(('LDA', LinearDiscriminantAnalysis()))
-# models.append(('KNN', KNeighborsClassifier()))
-# models.append(('CART', DecisionTreeClassifier()))
-# models.append(('NB', GaussianNB()))
-# models.append(('SVM', SVC()))
-
-# # evaluate each model in turn
-# results = []
-# names = []
-# for name, model in models:
-# 	kfold = model_selection.KFold(n_splits=10, random_state=seed)
-# 	cv_results = model_selection.cross_val_score(model, X_train, Y_train, cv=kfold, scoring=scoring)
-# 	results.append(cv_results)
-# 	names.append(name)
-# 	msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())
-# 	print(msg)
-
-# # Compare Algorithms
-# fig = plt.figure()
-# fig.suptitle('Algorithm Comparison')
-# ax = fig.add_subplot(111)
-# plt.boxplot(results)
-# ax.set_xticklabels(names)
-# plt.show()
-
-# # Make predictions on validation dataset
-# knn = KNeighborsClassifier()
-# knn.fit(X_train, Y_train)
-# predictions = knn.predict(X_validation)
-# print(accuracy_score(Y_validation, predictions))
-# print(confusion_matrix(Y_validation, predictions))
-# print(classification_report(Y_validation, predictions))
+print("-- Data Analysis --")
+print("-- Pclass --")
+print(train_df[['Pclass', 'Survived']].groupby(['Pclass'], as_index=False).mean().sort_values(by='Survived', ascending=False))
+print("-- Sex --")
+print(train_df[['Sex', 'Survived']].groupby(['Sex'], as_index=False).mean().sort_values(by='Survived', ascending=False))
+print("-- SibSp --")
+print(train_df[['SibSp', 'Survived']].groupby(['SibSp'], as_index=False).mean().sort_values(by='Survived', ascending=False))
+print("-- Parch --")
+print(train_df[['Parch', 'Survived']].groupby(['Parch'], as_index=False).mean().sort_values(by='Survived', ascending=False))
