@@ -213,5 +213,88 @@ for dataset in combine:
 train_df = train_df.drop(['FareBand'], axis=1)
 combine = [train_df, test_df]
 
-print(train_df.head(10).to_string())
-print(test_df.head(10).to_string())
+# print(train_df.head(10).to_string())
+# print(test_df.head(10).to_string())
+
+# Model Predict and Solve
+
+# logistic regression
+X_train = train_df.drop("Survived", axis=1)
+Y_train = train_df["Survived"]
+X_test = test_df.drop("PassengerId", axis=1).copy()
+#print(X_train.shape, Y_train.shape, X_test.shape)
+
+logreg = LogisticRegression()
+logreg.fit(X_train, Y_train)
+Y_pred = logreg.predict(X_test)
+acc_log = round(logreg.score(X_train, Y_train) * 100, 2)
+print("log:", acc_log)
+#print(Y_pred)
+
+coeff_df = pd.DataFrame(train_df.columns.delete(0))
+coeff_df.columns = ['Feature']
+coeff_df["Correlation"] = pd.Series(logreg.coef_[0])
+
+#print(coeff_df.sort_values(by='Correlation', ascending=False))
+
+# support vector machines
+svc = SVC()
+svc.fit(X_train, Y_train)
+Y_pred = svc. predict(X_test)
+acc_svc = round(svc.score(X_train, Y_train) * 100, 2)
+print("SVC:", acc_svc)
+
+# K nearest neighbours
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X_train, Y_train)
+Y_pred = knn.predict(X_test)
+acc_knn = round(knn.score(X_train, Y_train) * 100, 2)
+print("knn:",acc_knn)
+
+# gaussian naive bayes
+gaussian = GaussianNB()
+gaussian.fit(X_train, Y_train)
+Y_pred = gaussian.predict(X_test)
+acc_gaussian = round(gaussian.score(X_train, Y_train) * 100, 2)
+print("gaussian", acc_gaussian)
+
+# perceptron
+perceptron = Perceptron()
+perceptron.fit(X_train, Y_train)
+Y_pred = perceptron.predict(X_test)
+acc_perceptron = round(perceptron.score(X_train, Y_train) * 100, 2)
+print(acc_perceptron)
+
+# linear SVC
+linear_svc = LinearSVC()
+linear_svc.fit(X_train, Y_train)
+Y_pred = linear_svc.predict(X_test)
+acc_linear_svc = round(linear_svc.score(X_train, Y_train) * 100, 2)
+print("linear_svc", acc_linear_svc)
+
+# stochastic gradient descent
+sgd = SGDClassifier()
+sgd.fit(X_train, Y_train)
+Y_pred = sgd.predict(X_test)
+acc_sgd = round(sgd.score(X_train, Y_train) * 100, 2)
+print("sgd", acc_sgd)
+
+# decision tree
+decision_tree = DecisionTreeClassifier()
+decision_tree.fit(X_train, Y_train)
+Y_pred = decision_tree.predict(X_test)
+acc_decision_tree = round(decision_tree.score(X_train, Y_train) * 100, 2)
+print("decision_tree", acc_decision_tree)
+
+# random forest
+random_forest = RandomForestClassifier(n_estimators=100)
+random_forest.fit(X_train, Y_train)
+Y_pred = random_forest.predict(X_test)
+acc_random_forest = round(random_forest.score(X_train, Y_train) * 100, 2)
+print("random_forest", acc_random_forest)
+
+models = pd.DataFrame({
+    'Model':['Support Vector Machines', 'KNN', 'Logistic Regression', 'Random Forest', 'Naive Bayes', 'Percepton', 'Stochastic Gradient Descent', 'Linear SVC', 'Decision Tree'],
+    'Score':[acc_svc, acc_knn, acc_log, acc_random_forest, acc_gaussian, acc_perceptron, acc_sgd, acc_linear_svc, acc_decision_tree]
+})
+print(models.sort_values(by='Score', ascending=False))
