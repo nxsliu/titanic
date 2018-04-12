@@ -25,7 +25,7 @@ combine = [train_df, test_df]
 #print(train_df.columns.values)
 
 # preview the data
-# print(train_df.head().to_string())
+print(train_df.head().to_string())
 
 #print(train_df.tail())
 
@@ -298,3 +298,10 @@ models = pd.DataFrame({
     'Score':[acc_svc, acc_knn, acc_log, acc_random_forest, acc_gaussian, acc_perceptron, acc_sgd, acc_linear_svc, acc_decision_tree]
 })
 print(models.sort_values(by='Score', ascending=False))
+
+submission = pd.DataFrame({
+    "PassengerId": test_df["PassengerId"],
+    "Survived": Y_pred
+})
+
+submission.to_csv('output/submission.csv', index=False)
